@@ -9,11 +9,16 @@ const AppError  = require("../utilis/appError")
 const {generateRefreshToken} = require("../config/refreshtoken");
 const { generateToken } = require("../config/jwtToken");
 
+
 // REGESTER USER
  const regester = async(req,res)=>{  
     try {
 
         const user = await User.findOne({email})
+
+        if(user){
+          return res.status(400).json({mes:" Email already exietd"});
+        }
 
         const salt = await bcrypt.genSalt();
         
@@ -122,13 +127,24 @@ const handleRefreshToken = asyncHandler(async (req, res) => {
 
       const otpcode = Math.floor((Math.random()*10000)+1)
 
-      const otpData = new Otp({
+      const otpModal = await Otp.findOne({email:email})
+      console.log(otpModal)
+      if(otpModal){
+        otpModal.otp=otpcode;
+        otpModal.expierIn=new Date().getTime() + 300*1000;
+
+        await otpModal.save()
+      }else{
+        const otpData = new Otp({
           email:email,
           otp:otpcode,
           expierIn:new Date().getTime() + 300*1000
       })
 
       await otpData.save()
+      }
+
+
 
       res.status(201).json({
         status:"success",
@@ -141,29 +157,70 @@ const handleRefreshToken = asyncHandler(async (req, res) => {
 
 
   const varyfyOtp = catchAsync(async(req,res,next)=>{
-      const{otp,email} = req.body
-
-      const findOtpData = await Otp.findOne({email:email})
+      const{otp,email} = req.body;
+      const findOtpData = await Otp.findOne({email:email});
 
       if(!findOtpData){
         return res.status(400).json({mes:"somthing is wrong! please try later"});
       }
 
-      const findOtp = await Otp.findOne({otp:otp,email:email})
-      console.log(findOtp)
-
-      if(!findOtp){
+      if(findOtpData.otp !== Number(otp)){
         return res.status(400).json({mes:"otp not valid"});
       }
+
+      const newData = new Date().getTime();
+      const validTime = findOtpData.expierIn - newData;
+
+      if(validTime < 0) {
+        return res.status(400).json({mes:"otp varifition time expoer ! plase try again"});
+      }
+
+      
+
+      const finduser = await User.findOne({email:email})
 
 
       res.status(200).json({
         status:"success",
         message:" otp varyfy!",
-        // user:userFind
+        userId:finduser._id
       }) 
 
   })
 
 
-  module.exports={regester,login,sentOtp,varyfyOtp}
+  const changePassword = catchAsync(async(req,res,next)=>{
+      const {id,password,comfrimPassword} = req.body;
+
+      const user = await User.findById(id)
+
+      if(!user){
+        return res.status(400).json({mes:"somthing is wrong! please try later"});
+      }
+
+      if(password!==comfrimPassword){
+        return res.status(400).json({mes:"password didnot macth"});
+      }
+
+      const salt = await bcrypt.genSalt(); 
+      const hassPassword = await bcrypt.hash(req.body.password,salt);
+
+      await User.findByIdAndUpdate(id,{
+          password:hassPassword,
+      },{
+        new:true
+      })
+
+
+      await Otp.findOneAndDelete({email:user.email})
+
+      res.status(200).json({
+        status:"success",
+        message:"password change sussacefylly!",
+      }) 
+
+
+  })
+
+
+  module.exports={regester,login,sentOtp,varyfyOtp,changePassword}
