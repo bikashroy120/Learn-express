@@ -222,5 +222,16 @@ const handleRefreshToken = asyncHandler(async (req, res) => {
 
   })
 
+  const getallUser = catchAsync(async(req,res,next)=>{
+    const alluser = await User.find()
 
-  module.exports={regester,login,sentOtp,varyfyOtp,changePassword}
+
+    res.status(200).json({
+      status:"Success",
+      result:alluser.length,
+      data:alluser
+    })
+  })
+
+
+  module.exports={getallUser,regester,login,sentOtp,varyfyOtp,changePassword}

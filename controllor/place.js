@@ -4,6 +4,7 @@ const catchAsync = require("../utilis/catchAsync")
 
 
 
+
 const getAllPlece = catchAsync(async(req,res,next)=>{
 
       // Filtring
@@ -148,7 +149,7 @@ const getMon = asyncHandler(async(req,res)=>{
    // Tour.findOne({ _id: req.params.id })
  
    if (!tour) {
-     return next(new AppError('No tour found with that ID', 404));
+    return res.status(400).json({mes:"somthing is wrong! please try later"});
    }
  
    res.status(200).json({
@@ -177,14 +178,12 @@ const getMon = asyncHandler(async(req,res)=>{
    });
  
    if (!tour) {
-     return next(new AppError('No tour found with that ID', 404));
+    return res.status(400).json({mes:"somthing is wrong! please try later"});
    }
  
    res.status(200).json({
      status: 'success',
-     data: {
-       tour
-     }
+     data:tour
    });
  });
  
@@ -192,7 +191,7 @@ const getMon = asyncHandler(async(req,res)=>{
    const tour = await Place.findByIdAndDelete(req.params.id);
  
    if (!tour) {
-     return next(new AppError('No tour found with that ID', 404));
+    return res.status(400).json({mes:"somthing is wrong! please try later"});
    }
  
    res.status(204).json({
@@ -281,4 +280,4 @@ const getMon = asyncHandler(async(req,res)=>{
 
 
 
-module.exports={createTour,getAllPlece,getWonerPlace,getAvrgase,getSingalPlace,getMon}
+module.exports={updateTour,deleteTour,createTour,getAllPlece,getWonerPlace,getAvrgase,getSingalPlace,getMon}

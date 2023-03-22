@@ -1,4 +1,5 @@
 const mongoose = require("mongoose")
+const  slugify = require('slugify')
 
 const placeSchema = new mongoose.Schema({
     name: {
@@ -76,17 +77,19 @@ const placeSchema = new mongoose.Schema({
       type: Boolean,
       default: false
     },
-    startLocation: {
-      // GeoJSON
-      type: {
-        type: String,
-        default: 'Point',
-        enum: ['Point']
-      },
-      coordinates: [Number],
-      address: String,
-      description: String
-    },
+    startLocation: 
+      {
+        // GeoJSON
+        type: {
+          type: String,
+          default: 'Point',
+          enum: ['Point']
+        },
+        coordinates: [Number],
+        address: String,
+        description: String
+      }
+    ,
     locations: [
       {
         type: {
@@ -113,13 +116,13 @@ const placeSchema = new mongoose.Schema({
   })
 
   // tourSchema.index({ price: 1 });
-  placeSchema.index({ price: 1, ratingsAverage: -1 });
-  placeSchema.index({ slug: 1 });
-  placeSchema.index({ startLocation: '2dsphere' });
+//   placeSchema.index({ price: 1, ratingsAverage: -1 });
+//   placeSchema.index({ slug: 1 });
+//   placeSchema.index({ startLocation: '2dsphere' });
 
-  placeSchema.virtual('durationWeeks').get(function() {
-  return this.duration / 7;
-});
+//   placeSchema.virtual('durationWeeks').get(function() {
+//   return this.duration / 7;
+// });
 
 // Virtual populate
 // placeSchema.virtual('reviews', {
@@ -149,10 +152,10 @@ placeSchema.pre(/^find/, function(next) {
     next();
   });
   
-  placeSchema.post(/^find/, function(docs, next) {
-    console.log(`Query took ${Date.now() - this.start} milliseconds!`);
-    next();
-  });
+  // placeSchema.post(/^find/, function(docs, next) {
+  //   console.log(`Query took ${Date.now() - this.start} milliseconds!`);
+  //   next();
+  // });
 
 
 
