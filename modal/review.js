@@ -18,11 +18,29 @@ const reviewSchema = new mongoose.Schema({
       },
     tour:{
         type:mongoose.Schema.ObjectId,
-        ref:Plase,
-        required:[true,"Rebiew moust be a tour"]
+        ref:'Place',
+        required:[true,"Review moust be a tour"]
     },
+    user:{
+        type:mongoose.Schema.ObjectId,
+        ref:'User',
+        required:[true,"Review moust be a user"]
+    }
 
 })
+
+
+reviewSchema.pre(/^find/, function(next) {
+    this.populate({
+      path: 'tour',
+      select: 'name'
+    }).populate({
+        path:"user",
+        select:"username email"
+    });
+  
+    next();
+  });
 
 const Review = mongoose.model("Review",reviewSchema)
 

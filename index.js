@@ -12,6 +12,7 @@ const authRouters = require("./routers/auth")
 const uploasRouters = require("./routers/upload") 
 const path = require("path")
 const placeRouters = require("./routers/place") 
+const reviewRouters = require("./routers/review")
 
 
 app.use(cors()) 
@@ -26,6 +27,7 @@ app.use(morgan('dev'))
 app.use("/api/user",authRouters)
 app.use("/api/upload",uploasRouters)
 app.use("/api/place",placeRouters)
+app.use("/api/review",reviewRouters)
 
 
 
