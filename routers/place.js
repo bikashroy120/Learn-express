@@ -10,7 +10,7 @@ router.get("/:id",getSingalPlace)
 router.get("/owner",authMiddleware,getWonerPlace)
 router.get("/avg",getAvrgase)    
 router.get("/mon",getMon)
-router.patch("/update",authMiddleware,updateTour)
+router.patch("/update/:id",authMiddleware,updateTour)
 router.delete("/:id",authMiddleware,deleteTour)
 
 
