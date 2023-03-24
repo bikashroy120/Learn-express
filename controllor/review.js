@@ -5,8 +5,14 @@ const catchAsync = require("../utilis/catchAsync")
 
 const creactReview  = catchAsync(async(req,res,next)=>{
     const {id} = req.user
+    const {tourId} = req.params;
 
-    const review = await Review.create({user:id,...req.body})
+    const review = await Review.create({
+        user:id,
+        rating:req.body.rating,
+        tour:tourId,
+        review:req.body.review
+    })
 
     res.status(201).json({
         status: 'success',
@@ -28,10 +34,23 @@ const getAllReview = catchAsync(async(req,res,next)=>{
 })
 
 
+const deleteReview = catchAsync(async(req,res,next)=>{
+    const {id} = req.params;
+    console.log(id)
+    const delet = await Review.findByIdAndDelete(id)
+
+    res.status(204).json({
+        status:"succes",
+        message:"Review Delete succesfully!"
+    })
+})
+
+
 
 
 
 module.exports = {
     creactReview,
-    getAllReview
+    getAllReview,
+    deleteReview
 }

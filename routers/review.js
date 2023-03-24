@@ -1,11 +1,12 @@
 const express = require("express");
-const { creactReview, getAllReview } = require("../controllor/review");
+const { creactReview, getAllReview, deleteReview } = require("../controllor/review");
 const { authMiddleware } = require("../middlewarer/authMiddlewarer");
 
 const router = express.Router();
 
- router.post("/",authMiddleware,creactReview)
+ router.post("/:tourId",authMiddleware,creactReview)
  router.get("/",getAllReview)
+ router.post("/delete/:id",deleteReview)
 
 
 

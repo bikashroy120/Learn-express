@@ -13,8 +13,8 @@ const { generateToken } = require("../config/jwtToken");
 // REGESTER USER
  const regester = async(req,res)=>{  
     try {
-
-        const user = await User.findOne({email})
+      console.log(req.body)
+        const user = await User.findOne({email:req.body.email})
 
         if(user){
           return res.status(400).json({mes:" Email already exietd"});
