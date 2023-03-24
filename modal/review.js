@@ -27,44 +27,29 @@ const reviewSchema = new mongoose.Schema({
         ref:'User',
         required:[true,"Review moust be a user"]
     }
+}
+)
 
-})
 
 
-reviewSchema.pre(/^find/, function(next) {
-    // this.populate({
-    //   path: 'tour',
-    //   select: 'name'
-    // }).populate({
-    //     path:"user",
-    //     select:"username email"
-    // });
-
-    this.populate({
-          path:"user",
-          select:"username email"
-      });
-  
-    next();
-  });
 
   // reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
 
-// reviewSchema.pre(/^find/, function(next) {
-//   // this.populate({
-//   //   path: 'tour',
-//   //   select: 'name'
-//   // }).populate({
-//   //   path: 'user',
-//   //   select: 'name photo'
-//   // });
+reviewSchema.pre(/^find/, function(next) {
+  // this.populate({
+  //   path: 'tour',
+  //   select: 'name'
+  // }).populate({
+  //   path: 'user',
+  //   select: 'name photo'
+  // });
 
-//   this.populate({
-//     path: 'user',
-//     select: 'name photo'
-//   });
-//   next();
-// });
+  this.populate({
+    path: 'user',
+    select: 'name'
+  });
+  next();
+});
 
 reviewSchema.statics.calcAverageRatings = async function(tourId) {
 
@@ -106,11 +91,13 @@ reviewSchema.post('save', function() {
 // findByIdAndDelete
 reviewSchema.pre(/^findOneAnd/, async function(next) {
   this.r = await this.findOne();
+  console.log(this.r)
   next();
 });
 
 reviewSchema.post(/^findOneAnd/, async function() {
   // await this.findOne(); does NOT work here, query has already executed
+  console.log(this.r)
   await this.r.constructor.calcAverageRatings(this.r.tour);
 });
 

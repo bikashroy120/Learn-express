@@ -6,7 +6,7 @@ const router = express.Router();
 
  router.post("/:tourId",authMiddleware,creactReview)
  router.get("/",getAllReview)
- router.post("/delete/:id",deleteReview)
+ router.delete("/delete/:id",deleteReview)
 
 
 
