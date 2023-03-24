@@ -125,11 +125,11 @@ const placeSchema = new mongoose.Schema({
 // });
 
 // Virtual populate
-// placeSchema.virtual('reviews', {
-//   ref: 'Review',
-//   foreignField: 'tour',
-//   localField: '_id'
-// });
+placeSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id'
+});
 
 placeSchema.pre('save', function(next) {
   this.slug = slugify(this.name, { lower: true });

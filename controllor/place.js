@@ -78,7 +78,7 @@ const getWonerPlace = catchAsync(async(req,res,next)=>{
 const getSingalPlace = catchAsync(async(req,res,next)=>{
 
    const {id} = req.params;
-      const place = await Place.findById(id);
+      const place = await Place.findById(id).populate("reviews");
       res.json({
          status:"Success",
          data:place
