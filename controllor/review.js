@@ -36,7 +36,6 @@ const getAllReview = catchAsync(async(req,res,next)=>{
 
 const deleteReview = catchAsync(async(req,res,next)=>{
     const {id} = req.params;
-    console.log(id)
     const delet = await Review.findByIdAndDelete(id)
 
     res.status(204).json({
